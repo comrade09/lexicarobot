@@ -1,0 +1,39 @@
+### Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Unit test / coverage
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+htmlcov/
+
+# mypy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+### Environments — never commit real secrets
+.env
+.venv
+env/
+venv/
+ENV/
+
+### This bot's own runtime output
+filesharingbot.txt
+*.log
+
+### Editors / OS
+.vscode/
+.idea/
+.DS_Store
