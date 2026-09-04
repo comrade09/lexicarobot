@@ -1,9 +1,6 @@
 """(©) Codexbotz — modernized for Python 3.12+ with Button Colors & Blockquotes"""
 from __future__ import annotations
 
-# --- PYROMOD FIX: MUST BE IMPORTED BEFORE PYROGRAM ---
-import pyromod.listen
-
 import asyncio
 import uuid
 
