@@ -1,6 +1,8 @@
 """(©) Codexbotz — modernized for Python 3.12+ with Button Colors & Blockquotes"""
-
 from __future__ import annotations
+
+# --- PYROMOD FIX: MUST BE IMPORTED BEFORE PYROGRAM ---
+import pyromod.listen
 
 import asyncio
 import uuid
@@ -107,10 +109,8 @@ async def start_command(client: Client, message: Message) -> None:
 async def _send_welcome(message: Message) -> None:
     reply_markup = InlineKeyboardMarkup(
         [
-            # style="primary" renders blue/accent for main actions
             [InlineKeyboardButton(text="Menu", callback_data="help_cb", style="primary")],
             [
-                # style="success" renders green for positive channels/support links
                 InlineKeyboardButton(text="Support ✨", url="https://t.me/voltaic_network", style="success"),
                 InlineKeyboardButton(text="Updates 📡", url="https://t.me/voltaic_network", style="success"),
             ],
@@ -121,7 +121,7 @@ async def _send_welcome(message: Message) -> None:
         reply_markup=reply_markup,
         disable_web_page_preview=False,
         quote=True,
-        parse_mode=ParseMode.HTML, # Ensures blockquote renders correctly
+        parse_mode=ParseMode.HTML, 
     )
 
 
@@ -197,7 +197,6 @@ async def delete_files(messages: list[Message], status_message: Message) -> None
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message) -> None:
-    # style="danger" renders red for mandatory actions like joining forces
     buttons = [[InlineKeyboardButton("Join Channel", url=client.invitelink, style="danger")]]
     try:
         buttons.append(
@@ -230,7 +229,6 @@ async def get_users(client: Bot, message: Message) -> None:
 @Bot.on_message(filters.private & filters.command("broadcast") & filters.user(ADMINS))
 async def send_text(client: Bot, message: Message) -> None:
     if not message.reply_to_message:
-        # Using blockquote for the error/help message
         msg = await message.reply(
             "<blockquote><b>⚠️ Broadcast Command Usage:</b>\n\n"
             "Reply to the message you want to broadcast.\n\n"
@@ -255,7 +253,6 @@ async def send_text(client: Bot, message: Message) -> None:
         [[InlineKeyboardButton("🛑 Stop Broadcast", callback_data=f"bcast_stop_{session.id}", style="danger")]]
     )
     
-    # Using blockquote for the loading message
     pls_wait = await message.reply(
         f"<blockquote><b>🔄 Broadcasting Message ({mode} mode)...</b>\n"
         f"<i>Please wait, this will take some time.</i></blockquote>", 
@@ -298,7 +295,6 @@ async def send_text(client: Bot, message: Message) -> None:
         except Exception:
             session.stats["unsuccessful"] += 1
 
-    # Using blockquote for the final statistics panel
     status_text = (
         f"<blockquote><b><u>Broadcast {'Completed ✅' if session.is_running else 'Stopped 🛑'}</u></b>\n\n"
         f"<b>Total Users Checked:</b> <code>{session.stats['total']}</code>\n"
@@ -349,7 +345,6 @@ async def broadcast_callbacks(client: Client, query: CallbackQuery) -> None:
             except Exception:
                 pass
         
-        # Keep the original status text but append the revocation stats inside a new blockquote
         text = query.message.html
         text += f"\n\n<blockquote><b>🗑 Revocation Complete:</b>\n<code>{deleted_count}</code> messages successfully deleted.</blockquote>"
         
