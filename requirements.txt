@@ -5,7 +5,10 @@
 # name, so having both is a coin-flip on which one you actually get.
 pyrofork
 TgCrypto
-Pyromod==1.5
+
+pyrofork
+TgCrypto
+Pyromod
 
 # --- Web server (streaming routes) --------------------------------------
 aiohttp
