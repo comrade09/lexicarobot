@@ -8,7 +8,7 @@ TgCrypto
 
 pyrofork
 TgCrypto
-pyromod-fork
+pyromod
 
 # --- Web server (streaming routes) --------------------------------------
 aiohttp
