@@ -1,16 +1,10 @@
 """(©) Codexbotz — modernized for Python 3.12+"""
-
 from __future__ import annotations
-
 import sys
 from datetime import datetime
-from collections import defaultdict
-
-import pyromod.listen  # noqa: F401  (patches Client with .listen())
 from aiohttp import web
 from pyrogram import Client
 from pyrogram.enums import ParseMode
-
 from config import (
     API_HASH,
     APP_ID,
@@ -43,13 +37,6 @@ class Bot(Client):
             workers=TG_BOT_WORKERS,
             bot_token=TG_BOT_TOKEN,
         )
-        
-        # --- PYROMOD KEYERROR FIX ---
-        # A defaultdict automatically creates an empty list if Pyromod looks for a missing key.
-        # This completely prevents the KeyError without needing to import Pyromod internals!
-        self.listeners = defaultdict(list)
-        # ----------------------------
-
         self.LOGGER = LOGGER
         self.uptime: datetime | None = None
         self.username: str | None = None
@@ -57,19 +44,15 @@ class Bot(Client):
 
     async def start(self) -> None:
         await super().start()
-
         usr_bot_me = await self.get_me()
         self.uptime = datetime.now()
-
         if FORCE_SUB_CHANNEL:
             await self._resolve_force_sub_link()
-
         self.set_parse_mode(ParseMode.HTML)
         self.LOGGER(__name__).info(
             "%s\nBot Running..!\n\nCreated by https://t.me/CodeXBotz", BANNER
         )
         self.username = usr_bot_me.username
-
         await self._start_web_server()
 
     async def _resolve_force_sub_link(self) -> None:
@@ -91,7 +74,3 @@ class Bot(Client):
     async def stop(self, *args) -> None:
         await super().stop()
         self.LOGGER(__name__).info("Bot stopped.")
-
-
-if __name__ == "__main__":
-    Bot().run()
