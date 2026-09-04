@@ -6,6 +6,7 @@ import sys
 from datetime import datetime
 
 import pyromod.listen  # noqa: F401  (patches Client with .listen())
+from pyromod.listen import ListenerTypes  # <-- Imported for the KeyError fix
 from aiohttp import web
 from pyrogram import Client
 from pyrogram.enums import ParseMode
@@ -42,6 +43,16 @@ class Bot(Client):
             workers=TG_BOT_WORKERS,
             bot_token=TG_BOT_TOKEN,
         )
+        
+        # --- PYROMOD KEYERROR FIX ---
+        # Forces the listeners dictionary to initialize properly so pyromod doesn't crash
+        if not hasattr(self, "listeners"):
+            self.listeners = {}
+        for listener_type in ListenerTypes:
+            if listener_type not in self.listeners:
+                self.listeners[listener_type] = []
+        # ----------------------------
+
         self.LOGGER = LOGGER
         self.uptime: datetime | None = None
         self.username: str | None = None
