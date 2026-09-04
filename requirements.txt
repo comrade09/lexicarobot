@@ -1,0 +1,41 @@
+# --- Telegram -----------------------------------------------------------
+# Pyrofork replaces the `pyrogram` package namespace, so `from pyrogram
+# import ...` throughout this codebase keeps working unchanged. Do NOT
+# also list plain `pyrogram` here — they install under the same package
+# name, so having both is a coin-flip on which one you actually get.
+pyrofork
+TgCrypto
+Pyromod==1.5
+
+# --- Web server (streaming routes) --------------------------------------
+aiohttp
+
+# --- Database -------------------------------------------------------------
+pymongo
+dnspython
+
+# --- Misc, actually imported somewhere in this codebase --------------------
+pytz
+humanize
+openai          # plugins/custom_filters.py
+
+# --- Listed before, but not imported anywhere in this codebase -------------
+# I couldn't find a single `import`/`from` for any of these across every
+# .py file (including inside functions). Rather than silently drop them —
+# in case they're for a feature you're about to add, or I missed a dynamic
+# import — they're commented out here. Uncomment whichever you actually
+# need; leaving them all out shrinks install time and image size a lot
+# (selenium + webdriver-manager + PyMuPDF alone are heavy).
+#
+# cloudscraper
+# curl_cffi
+# requests
+# telethon
+# google-genai
+# motor
+# selenium
+# webdriver-manager
+# Flask
+# PyMuPDF
+# pytesseract
+# Pillow

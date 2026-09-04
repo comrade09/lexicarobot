@@ -1,0 +1,96 @@
+{
+  "name": "TG File Share/Sharing Bot",
+  "description": "File sharing bot: store posts in a private channel, other users access them via special links.",
+  "keywords": ["telegram", "file", "sharing"],
+  "repository": "https://github.com/CodeXBotz/File-Sharing-Bot",
+  "logo": "https://ibb.co/FgPVtzw",
+  "env": {
+    "TG_BOT_TOKEN": {
+      "description": "Your Bot token, get it from @Botfather",
+      "value": ""
+    },
+    "OWNER_ID": {
+      "description": "An integer consisting of your owner ID",
+      "value": ""
+    },
+    "APP_ID": {
+      "description": "Your app id, take it from my.telegram.org",
+      "value": ""
+    },
+    "API_HASH": {
+      "description": "Your api hash, take it from my.telegram.org",
+      "value": ""
+    },
+    "DATABASE_URL": {
+      "description": "Your MongoDB connection URL",
+      "value": ""
+    },
+    "DATABASE_NAME": {
+      "description": "MongoDB database name",
+      "value": "filesharexbot"
+    },
+    "CHANNEL_ID": {
+      "description": "ID of your database channel (make the bot an admin there first)",
+      "value": "-100"
+    },
+    "FORCE_SUB_CHANNEL": {
+      "description": "ID of a channel/group users must join to use the bot, or 0 to disable",
+      "value": "0",
+      "required": false
+    },
+    "START_MESSAGE": {
+      "description": "Optional: start message, HTML parse mode",
+      "value": "Hello {first}\n\nI can store private files in Specified Channel and other users can access it from special link.",
+      "required": false
+    },
+    "FORCE_SUB_MESSAGE": {
+      "description": "Optional: force-sub message, HTML parse mode",
+      "value": "Hello {first}\n\n<b>You need to join in my Channel/Group to use me\n\nKindly Please join Channel</b>",
+      "required": false
+    },
+    "ADMINS": {
+      "description": "Space-separated list of admin user IDs",
+      "value": "",
+      "required": false
+    },
+    "CUSTOM_CAPTION": {
+      "description": "Optional: caption template applied to shared documents",
+      "value": "",
+      "required": false
+    },
+    "PROTECT_CONTENT": {
+      "description": "Protect shared content from being forwarded/saved (True/False)",
+      "value": "False",
+      "required": false
+    },
+    "DISABLE_CHANNEL_BUTTON": {
+      "description": "If True, disables the share button posted on the DB channel copy (True/False)",
+      "value": "False",
+      "required": false
+    },
+    "TG_BOT_WORKERS": {
+      "description": "Number of Pyrogram worker threads",
+      "value": "4",
+      "required": false
+    },
+    "GEMINI": {
+      "description": "API key used by plugins/custom_filters.py's AI reply feature",
+      "value": "",
+      "required": false
+    },
+    "AUDIT_LOG_CHAT_ID": {
+      "description": "Optional: a chat ID YOU control, to receive a log of stray private messages/media the bot doesn't otherwise handle. Leave blank to disable — this was previously hardcoded to third-party channel IDs; see MODERNIZATION_NOTES.md.",
+      "value": "",
+      "required": false
+    }
+  },
+  "buildpacks": [
+    { "url": "heroku/python" }
+  ],
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}
