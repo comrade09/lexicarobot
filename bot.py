@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
+from collections import defaultdict
 
 import pyromod.listen  # noqa: F401  (patches Client with .listen())
-from pyromod.listen import ListenerTypes  # <-- Imported for the KeyError fix
 from aiohttp import web
 from pyrogram import Client
 from pyrogram.enums import ParseMode
@@ -45,12 +45,9 @@ class Bot(Client):
         )
         
         # --- PYROMOD KEYERROR FIX ---
-        # Forces the listeners dictionary to initialize properly so pyromod doesn't crash
-        if not hasattr(self, "listeners"):
-            self.listeners = {}
-        for listener_type in ListenerTypes:
-            if listener_type not in self.listeners:
-                self.listeners[listener_type] = []
+        # A defaultdict automatically creates an empty list if Pyromod looks for a missing key.
+        # This completely prevents the KeyError without needing to import Pyromod internals!
+        self.listeners = defaultdict(list)
         # ----------------------------
 
         self.LOGGER = LOGGER
