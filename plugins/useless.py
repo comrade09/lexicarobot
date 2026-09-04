@@ -42,7 +42,7 @@ _IST = pytz.timezone("Asia/Kolkata")
 
 _IGNORED_COMMANDS = [
     "lecture", "solution", "help", "notes", "ask", "binging",
-    "chat", "search", "info", "stats", "del", "delete",
+    "start", "search", "info", "stats", "del", "delete",
 ]
 
 
