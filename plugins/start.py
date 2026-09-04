@@ -6,9 +6,16 @@ import uuid
 
 import humanize
 from pyrogram import Client, filters
-from pyrogram.enums import ParseMode
+from pyrogram.enums import ButtonStyle, ParseMode
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked
-from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import (
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    LinkPreviewOptions,
+    Message,
+    ReplyParameters,
+)
 
 from bot import Bot
 from config import (
@@ -106,28 +113,28 @@ async def start_command(client: Client, message: Message) -> None:
 async def _send_welcome(message: Message) -> None:
     reply_markup = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="Menu", callback_data="help_cb", style="primary")],
+            [InlineKeyboardButton(text="Menu", callback_data="help_cb", style=ButtonStyle.PRIMARY)],
             [
-                InlineKeyboardButton(text="Support ✨", url="https://t.me/voltaic_network", style="success"),
-                InlineKeyboardButton(text="Updates 📡", url="https://t.me/voltaic_network", style="success"),
+                InlineKeyboardButton(text="Support ✨", url="https://t.me/voltaic_network", style=ButtonStyle.SUCCESS),
+                InlineKeyboardButton(text="Updates 📡", url="https://t.me/voltaic_network", style=ButtonStyle.SUCCESS),
             ],
         ]
     )
     await message.reply_text(
         text=WELCOME_TEXT.format(**_greeting_kwargs(message)),
         reply_markup=reply_markup,
-        disable_web_page_preview=False,
-        quote=True,
+        link_preview_options=LinkPreviewOptions(is_disabled=False),
+        reply_parameters=ReplyParameters(message_id=message.id),
         parse_mode=ParseMode.HTML, 
     )
 
 
 async def _deliver_files(client: Client, message: Message, ids: list[int]) -> None:
-    temp_msg = await message.reply("Please Wait...", quote=True)
+    temp_msg = await message.reply("Please Wait...", reply_parameters=ReplyParameters(message_id=message.id))
     try:
         messages = await get_messages(client, ids)
     except Exception:
-        await message.reply_text("Something Went Wrong..!", quote=True)
+        await message.reply_text("Something Went Wrong..!", reply_parameters=ReplyParameters(message_id=message.id))
         return
     await temp_msg.delete()
 
@@ -194,14 +201,14 @@ async def delete_files(messages: list[Message], status_message: Message) -> None
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message) -> None:
-    buttons = [[InlineKeyboardButton("Join Channel", url=client.invitelink, style="danger")]]
+    buttons = [[InlineKeyboardButton("Join Channel", url=client.invitelink, style=ButtonStyle.DANGER)]]
     try:
         buttons.append(
             [
                 InlineKeyboardButton(
                     text="Try Again",
                     url=f"https://t.me/{client.username}?start={message.command[1]}",
-                    style="primary",
+                    style=ButtonStyle.PRIMARY,
                 )
             ]
         )
@@ -211,14 +218,18 @@ async def not_joined(client: Client, message: Message) -> None:
     await message.reply(
         text=FORCE_MSG.format(**_greeting_kwargs(message)),
         reply_markup=InlineKeyboardMarkup(buttons),
-        quote=True,
-        disable_web_page_preview=True,
+        reply_parameters=ReplyParameters(message_id=message.id),
+        link_preview_options=LinkPreviewOptions(is_disabled=True),
     )
 
 
 @Bot.on_message(filters.command("users") & filters.private & filters.user(ADMINS))
 async def get_users(client: Bot, message: Message) -> None:
-    msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG, quote=True)
+    msg = await client.send_message(
+        chat_id=message.chat.id,
+        text=WAIT_MSG,
+        reply_parameters=ReplyParameters(message_id=message.id),
+    )
     users = await full_userbase()
     await msg.edit(f"{len(users)} users are using this bot ")
 
@@ -232,7 +243,7 @@ async def send_text(client: Bot, message: Message) -> None:
             "<b>Options:</b>\n"
             "<code>/broadcast</code> - Sends a copy\n"
             "<code>/broadcast forward</code> - Forwards the message</blockquote>",
-            quote=True,
+            reply_parameters=ReplyParameters(message_id=message.id),
             parse_mode=ParseMode.HTML
         )
         await asyncio.sleep(8)
@@ -247,13 +258,13 @@ async def send_text(client: Bot, message: Message) -> None:
     broadcast_msg = message.reply_to_message
 
     reply_markup = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("🛑 Stop Broadcast", callback_data=f"bcast_stop_{session.id}", style="danger")]]
+        [[InlineKeyboardButton("🛑 Stop Broadcast", callback_data=f"bcast_stop_{session.id}", style=ButtonStyle.DANGER)]]
     )
     
     pls_wait = await message.reply(
         f"<blockquote><b>🔄 Broadcasting Message ({mode} mode)...</b>\n"
         f"<i>Please wait, this will take some time.</i></blockquote>", 
-        quote=True, 
+        reply_parameters=ReplyParameters(message_id=message.id),
         reply_markup=reply_markup,
         parse_mode=ParseMode.HTML
     )
@@ -302,7 +313,7 @@ async def send_text(client: Bot, message: Message) -> None:
     )
 
     final_markup = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("🗑 Revoke/Delete Broadcast", callback_data=f"bcast_revoke_{session.id}", style="danger")]]
+        [[InlineKeyboardButton("🗑 Revoke/Delete Broadcast", callback_data=f"bcast_revoke_{session.id}", style=ButtonStyle.DANGER)]]
     )
 
     await pls_wait.edit(text=status_text, reply_markup=final_markup, parse_mode=ParseMode.HTML)
@@ -330,7 +341,7 @@ async def broadcast_callbacks(client: Client, query: CallbackQuery) -> None:
         await query.answer("Revoking messages... This might take a moment.", show_alert=True)
         
         await query.message.edit_reply_markup(
-            InlineKeyboardMarkup([[InlineKeyboardButton("⏳ Revoking...", callback_data="none", style="primary")]])
+            InlineKeyboardMarkup([[InlineKeyboardButton("⏳ Revoking...", callback_data="none", style=ButtonStyle.PRIMARY)]])
         )
 
         deleted_count = 0
