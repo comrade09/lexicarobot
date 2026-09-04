@@ -42,8 +42,8 @@ class Bot(Client):
         self.username: str | None = None
         self.invitelink: str | None = None
 
-    async def start(self) -> None:
-        await super().start()
+    async def start(self, use_qr: bool = False, except_ids: list[int] | None = None) -> None:
+        await super().start(use_qr=use_qr, except_ids=except_ids)
         usr_bot_me = await self.get_me()
         self.uptime = datetime.now()
         if FORCE_SUB_CHANNEL:
