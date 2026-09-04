@@ -1,9 +1,13 @@
 # --- Telegram -----------------------------------------------------------
-# Pyrofork replaces the `pyrogram` package namespace, so `from pyrogram
-# import ...` throughout this codebase keeps working unchanged. Do NOT
-# also list plain `pyrogram` here — they install under the same package
-# name, so having both is a coin-flip on which one you actually get.
-pyrofork
+# Kurigram replaces the `pyrogram` package namespace, so `from pyrogram
+# import ...` throughout this codebase keeps working unchanged. It's the
+# fork that actually implements colored inline buttons (style="primary"/
+# "danger"/"success") — pyrofork does not support this, which is why you
+# hit `InlineKeyboardButton.__init__() got an unexpected keyword argument
+# 'style'`. Do NOT also list plain `pyrogram` or `pyrofork` here — they
+# all install under the same `pyrogram` package name, so having more than
+# one is a coin-flip on which you actually get.
+kurigram
 TgCrypto
 # --- Web server (streaming routes) --------------------------------------
 aiohttp
